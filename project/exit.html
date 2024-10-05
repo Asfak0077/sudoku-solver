@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exit App</title>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #8a2be2, #292229);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            block-size: 100vh;
+            color: white;
+        }
+
+        .exit-container {
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 30px;
+            border-radius: 20px;
+            box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);
+            text-align: center;
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        .exit-container h1 {
+            margin-bottom: 20px;
+            font-size: 24px;
+            color: #fff;
+        }
+
+        button {
+            padding: 15px 30px;
+            margin: 10px;
+            font-size: 16px;
+            border: none;
+            border-radius: 15px;
+            cursor: pointer;
+            inline-size: 165px;
+            block-size: 62px;
+            position: relative;
+            transition: background-color 0.3s ease, transform 0.3s ease;
+        }
+
+        .exit-btn {
+            background-color: #ff4c4c;
+        }
+
+        .stay-btn {
+            background-color: #4caf50;
+        }
+
+        button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0px 8px 15px rgba(0, 0, 0, 0.1);
+        }
+
+        button:active {
+            transform: scale(0.95);
+            background-color: rgba(255, 255, 255, 0.8);
+            transition: 0.1s;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1);
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="exit-container">
+        <h1>Are you sure you want to exit the app?</h1>
+        <button class="stay-btn" onclick="stayInApp()"><i class="fas fa-check"></i> Stay</button>
+        <button class="exit-btn"><i class="fas fa-door-open"></i> Exit</button>
+    </div>
+
+    <script>
+        function stayInApp() {
+            alert("Thank you for staying!");
+            window.location.href = "index.html";
+        }
+
+        function exitApp() {
+            alert("You have exited the app.");
+            window.close();
+        }
+    </script>
+
+</body>
+</html>

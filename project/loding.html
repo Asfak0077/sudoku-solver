@@ -1,0 +1,85 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading Page</title>
+    <style>
+        /* Basic styles to center everything */
+        body, html {
+            block-size: 100%;
+            margin: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            background-color: black;
+        }
+
+        .loading-container {
+            text-align: center;
+            color: white;
+        }
+
+        /* Style for the logo image */
+        .loading-logo img {
+            width: 100px;
+            height: auto;
+            margin-bottom: 20px;
+            background-color: black;
+        }
+
+        /* Style for the loading bar */
+        .loading-bar {
+            width: 250px;
+            height: 5px;
+            background-color: #333;
+            border-radius: 5px;
+            overflow: hidden;
+            position: relative;
+        }
+
+        .loading-bar-fill {
+            width: 0%;
+            height: 100%;
+            background-color: white;
+            border-radius: 5px;
+            animation: loading 5s forwards;
+        }
+
+        /* Animation for the loading bar */
+        @keyframes loading {
+            0% { width: 0%; }
+            100% { width: 100%; }
+        }
+    </style>
+
+    <script>
+        // JavaScript function to redirect after a set time
+        function redirectToNextPage() {
+            // Redirect to the next page after 5 seconds (5000 ms)
+            setTimeout(function() {
+                window.location.href = "suduku game.html"; // Change this to your next page URL
+            }, 4000);
+        }
+
+        // Call the function when the window loads
+        window.onload = redirectToNextPage;
+    </script>
+
+</head>
+<body>
+
+<div class="loading-container">
+    <!-- Logo -->
+    <div class="loading-logo">
+        <img src="download.png" alt="Apple Logo">
+    </div>
+
+    <!-- Loading bar -->
+    <div class="loading-bar">
+        <div class="loading-bar-fill"></div>
+    </div>
+</div>
+
+</body>
+</html>

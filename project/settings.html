@@ -1,0 +1,247 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver - Settings</title>
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Default theme (light) */
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            background-color: #f4f1f1; /* Main background color */
+            
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            block-size: 100vh;
+            color: white;
+        }
+
+        .title {
+            text-align: center;
+            margin-block-end: 20px;
+        }
+
+        .title h1 {
+            font-size: 3rem;
+            margin: 0;
+            letter-spacing: 5px;
+        }
+
+        .title h2 {
+            font-size: 2rem;
+            margin: 0;
+        }
+
+        .button {
+            margin:2px 0;
+            padding: 10px 30px;
+            background-color: #040e10;
+            border: none;
+            border-radius: 10px;
+            color: white;
+            font-size: 1.5rem;
+            cursor: pointer;
+            box-shadow: 0px 4px 6px rgba(33, 32, 32, 0.2);
+            transition: background-color 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .button:hover {
+            background-color: #797979;
+        }
+
+        .button .expert {
+            margin-inline-start: 10px;
+            font-size: 1rem;
+        }
+
+        .menu {
+            display: flex;
+            justify-content: center;
+            margin-block-start: 20px;
+        }
+
+        .menu div {
+            margin: 0 15px;
+            text-align: center;
+        }
+
+        .menu div img {
+            inline-size: 50px;
+            block-size: 50px;
+            margin-block-end: 5px;
+        }
+
+        .menu div span {
+            display: block;
+            font-size: 1.2rem;
+        }
+
+        button {
+            inline-size: 130px;
+            block-size: 67px;
+            cursor: pointer;
+            color: #fff;
+            font-size: 17px;
+            border-radius: 1rem;
+            border: none;
+            position: relative;
+            background: #100720;
+            transition: 0.1s;
+        }
+
+        button::after {
+            content: '';
+            inline-size: 100%;
+            block-size: 100%;
+            background-image: radial-gradient(circle farthest-corner at 10% 20%, rgba(255, 94, 247, 1) 17.8%, rgba(2, 245, 255, 1) 100.2%);
+            filter: blur(15px);
+            z-index: -1;
+            position: absolute;
+            inset-inline-start: 0;
+            inset-block-start: 0;
+        }
+
+        button:active {
+            transform: scale(0.9) rotate(3deg);
+            background: radial-gradient(circle farthest-corner at 10% 20%, rgba(255, 94, 247, 1) 17.8%, rgba(2, 245, 255, 1) 100.2%);
+            transition: 0.5s;
+        }/* Slightly scale the button on hover */
+        
+
+        .theme-toggle {
+            margin-top: 20px; /* Add margin for spacing */
+        }
+
+        /* Dark theme */
+        body.dark {
+            background-color: #100720; /* Dark background */
+            color: #fff; /* Light text */
+        }
+        body.light{
+            background-color: #0a0909;
+            color: #060606;
+        }
+
+        /* Colorful theme */
+        body.colorful {
+            background-color: #f8f807; /* Bright yellow background */
+            color: #0a0a0a; /* Blue text */
+        }
+
+        /* Button styles for dark theme */
+        body.dark .button {
+            background-color: #0e0d0d; /* Dark button background */
+        }
+
+        /* Button styles for colorful theme */
+        body.colorful .button {
+            background-color: #10100f; /* Colorful button background */
+            color: #fff; /* Button text color */
+        }
+        body.light.button{
+            background-color: #141414;
+            color:#0e0d0d;
+        }
+    </style>
+</head>
+<body>
+    <header class="title">
+        <h1>Sudoku Solver</h1>
+        <center>
+        <nav>
+            <a href="index.html"><button class="button">Home</button></a>
+            
+            <a href="loding.html"><button class="button">Puzzle</button></a>
+            
+            <a href="exit.html"><button class="button">Exit</button></a>
+        </nav>
+        </center>
+        
+    </header>
+    <main>
+        <h2>Settings</h2>
+        <!-- Theme Toggle Buttons -->
+        <div class="theme-toggle">
+            <button onclick="setTheme('light')">Light Theme</button>
+            <button onclick="setTheme('dark')">Dark Theme</button>
+            <button onclick="setTheme('colorful')">Colorful Theme</button>
+        </div>
+        
+        <!-- Sound Toggle --><br>
+        <!-- Sound Toggle -->
+<div class="settings-option">
+    <label for="sound-toggle">Sound Effects:</label>
+    <input type="checkbox" id="sound-toggle" onclick="toggleSound()" checked>
+</div>
+
+<button onclick="playSound()">Click Me</button>
+
+
+
+<audio id="soundEffect" src="song.mp3"></audio>
+
+<script>
+    let soundEnabled = true;
+
+    function toggleSound() {
+        const soundToggle = document.getElementById("sound-toggle");
+        const soundEffect = document.getElementById("soundEffect");
+
+        soundEnabled = soundToggle.checked;
+
+        if (soundEnabled) {
+            soundEffect.play();
+        } else {
+            soundEffect.pause();
+            soundEffect.currentTime = 0; // Reset the sound effect
+        }
+    }
+
+    // Optional: Play sound on button click
+    function playSound() {
+        if (soundEnabled) {
+            const soundEffect = document.getElementById("soundEffect");
+            soundEffect.play();
+        }
+    }
+</script>
+
+        <label class="slider">
+            <input type="range" class="level">
+            <svg class="volume" xmlns="http://www.w3.org/2000/svg" version="1.1" xmlns:xlink="http://www.w3.org/1999/xlink" width="20" height="20" x="0" y="0" viewBox="0 0 24 24" style="enable-background:new 0 0 512 512" xml:space="preserve">
+                <g>
+                    <path d="M18.36 19.36a1 1 0 0 1-.705-1.71C19.167 16.148 20 14.142 20 12s-.833-4.148-2.345-5.65a1 1 0 1 1 1.41-1.419C20.958 6.812 22 9.322 22 12s-1.042 5.188-2.935 7.069a.997.997 0 0 1-.705.291z" fill="currentColor" data-original="#000000"></path>
+                    <path d="M15.53 16.53a.999.999 0 0 1-.703-1.711C15.572 14.082 16 13.054 16 12s-.428-2.082-1.173-2.819a1 1 0 1 1 1.406-1.422A6 6 0 0 1 18 12a6 6 0 0 1-1.767 4.241.996.996 0 0 1-.703.289zM12 22a1 1 0 0 1-.707-.293L6.586 17H4c-1.103 0-2-.897-2-2V9c0-1.103.897-2 2-2h2.586l4.707-4.707A.998.998 0 0 1 13 3v18a1 1 0 0 1-1 1z" fill="currentColor" data-original="#000000"></path>
+                </g>
+            </svg>
+        </label>
+    </main>
+    <footer>
+        <p>&copy; 2024 Sudoku Solver</p>
+    </footer>
+    <script>
+        function setTheme(theme) {
+            document.body.className = ''; // Clear existing classes
+            if (theme === 'dark') {
+                document.body.classList.add('dark'); // Add dark class
+            } else if (theme === 'colorful') {
+                document.body.classList.add('colorful'); // Add colorful class
+            } else {
+                document.body.classList.add(''); // Add light theme by default
+            }
+        }
+
+        function toggleSound() {
+            // Sound toggling logic here
+        }
+    </script>
+</body>
+</html>
