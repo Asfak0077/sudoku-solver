@@ -22,4 +22,29 @@ This project is a **web-based Sudoku game and solver** built using only **HTML, 
    ```bash
    [git clone https://github.com/your-username/sudoku-solver-web.git
    cd sudoku-solver-web](https://github.com/Asfak0077/sudoku-solver/edit/main/README.md)
+   Open the Project
+   
+## Run in Code
+
+1.Open index.html in your browser
+
+>Use navigation buttons/links to explore other pages like:
+
+>Start Game (suduku game.html)
+
+>Settings (settings.html)
+
+>About (about.html)
+
+>Exit (exit.html)
+
+## Play Sudoku
+
+>Use the game interface to place numbers 1–9 in the grid
+
+>Each number must appear only once per row, column, and 3x3 box
+
+>Additional features like auto-checking or hints can be implemented via JavaScript
+
+
    
