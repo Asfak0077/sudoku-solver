@@ -1,0 +1,46 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Exit - Sudoku Solver</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="glass-panel exit-container" style="text-align: center;">
+        <div class="title">
+            <h1 style="font-size: 2rem;">Are you sure you want to exit?</h1>
+        </div>
+        
+        <div style="display: flex; gap: 20px; justify-content: center; margin-top: 20px;">
+            <button class="button stay-btn" onclick="stayInApp()">
+                <i class="fas fa-check" style="margin-right: 8px;"></i> Stay
+            </button>
+            <button class="button exit-btn" onclick="exitApp()">
+                <i class="fas fa-door-open" style="margin-right: 8px;"></i> Exit
+            </button>
+        </div>
+    </div>
+
+    <script>
+        function stayInApp() {
+            window.location.href = "index.html";
+        }
+
+        function exitApp() {
+            alert("You have exited the app.");
+            window.close();
+            // Fallback for some browsers that won't close if not opened by script
+            document.body.innerHTML = `
+                <div class="glass-panel" style="text-align: center;">
+                    <h1>Goodbye!</h1>
+                    <p>You can now close this tab.</p>
+                </div>
+            `;
+        }
+    </script>
+
+</body>
+</html>

@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loading - Sudoku Solver</title>
+    <link rel="stylesheet" href="styles.css">
+    <script>
+        // Redirect to the next page after 4 seconds
+        function redirectToNextPage() {
+            setTimeout(function() {
+                window.location.href = "suduku game.html"; 
+            }, 4000);
+        }
+        window.onload = redirectToNextPage;
+    </script>
+</head>
+<body class="loading-page">
+
+    <div class="glass-panel loading-container">
+        <!-- Logo -->
+        <div class="loading-logo">
+            <img src="download.png" alt="Logo">
+        </div>
+
+        <!-- Loading bar -->
+        <div class="loading-bar">
+            <div class="loading-bar-fill"></div>
+        </div>
+        <p style="color: #86868b; font-size: 0.9rem; margin-top: 10px; letter-spacing: 2px;">LOADING Puzzles...</p>
+    </div>
+
+</body>
+</html>

@@ -1,0 +1,424 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sudoku Solver & Game</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+    <style>
+        .game-wrapper {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            width: 100%;
+        }
+        select {
+            appearance: none;
+            background-color: rgba(255, 255, 255, 0.1);
+            color: var(--text-color-dark);
+            padding: 10px 16px 10px 16px;
+            border-radius: 12px;
+            border: 1px solid rgba(255, 255, 255, 0.2);
+            font-family: var(--font-main);
+            font-size: 1rem;
+            cursor: pointer;
+            outline: none;
+        }
+        body.light select {
+            background-color: rgba(0, 0, 0, 0.05);
+            color: var(--text-color-light);
+            border-color: rgba(0, 0, 0, 0.1);
+        }
+    </style>
+</head>
+<body>
+    <div class="glass-panel game-wrapper">
+        <div id="controls">
+            <select id="grid-size" onchange="initGrid()" title="Select Grid Size">
+                <option value="4">4x4</option>
+                <option value="6">6x6</option>
+                <option value="9" selected>9x9</option>
+            </select>
+            
+            <select id="difficulty" title="Select Difficulty">
+                <option value="easy">Easy</option>
+                <option value="medium" selected>Medium</option>
+                <option value="hard">Hard</option>
+            </select>
+            
+            <button class="button" onclick="generatePuzzle()" style="background-color: var(--accent-color); color: white; border: none;">
+                <i class="fas fa-play" style="margin-right: 6px;"></i> New Game
+            </button>
+            <button class="button" onclick="solveSudoku()">
+                <i class="fas fa-magic" style="margin-right: 6px;"></i> Solve
+            </button>
+            <button class="button" onclick="clearBoardUI()">
+                <i class="fas fa-trash-alt" style="margin-right: 6px;"></i> Clear
+            </button>
+            <button class="button" onclick="giveHint()">
+                <i class="fas fa-lightbulb" style="margin-right: 6px;"></i> Hint
+            </button>
+            
+            <span id="hint-count"><i class="fas fa-star" style="color: #ffcc00; margin-right: 6px;"></i> Hints: 10</span>
+            <span id="timer"><i class="fas fa-clock" style="margin-right: 6px;"></i> 00:00</span>
+            
+            <button class="button exit-btn" onclick="location.href='exit.html'" style="padding: 10px 16px;">
+                 <i class="fas fa-sign-out-alt"></i>
+            </button>
+        </div>
+        
+        <div id="sudoku-container"></div>
+    </div>
+
+    <script>
+        // Load theme preferences
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('sudokuTheme') || 'dark';
+            if (savedTheme === 'light') document.body.classList.add('light');
+            else if (savedTheme === 'colorful') document.body.classList.add('colorful');
+        });
+
+        let gridSize = 9; 
+        let maxHints = 10; 
+        let hintCount = maxHints;
+        let timerInterval = null;
+        let elapsedTime = 0; 
+        let grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+
+        let timerStarted = false; 
+        
+        // Helper to determine box dimensions for standard Sudoku sizes
+        function getBoxDimensions(size) {
+            if (size === 4) return { width: 2, height: 2 };     // 4x4 (2x2 boxes)
+            if (size === 6) return { width: 3, height: 2 };     // 6x6 (3x2 boxes - standard)
+            if (size === 9) return { width: 3, height: 3 };     // 9x9 (3x3 boxes)
+            return { width: Math.floor(Math.sqrt(size)), height: Math.ceil(Math.sqrt(size)) }; // Fallback
+        }
+
+        // Apply selected grid size
+        function initGrid() {
+            const newSize = parseInt(document.getElementById('grid-size').value);
+            if (gridSize === newSize) return; 
+
+            gridSize = newSize;
+            grid = Array.from({ length: gridSize }, () => Array(gridSize).fill(0));
+            resetTimer();
+            createGridUI(); 
+        }
+
+        function createGridUI() {
+            const container = document.getElementById('sudoku-container');
+            container.innerHTML = '';
+
+            const cellSize = gridSize === 9 ? '45px' : (gridSize === 6 ? '55px' : '65px');
+            container.style.gridTemplateColumns = `repeat(${gridSize}, ${cellSize})`;
+            container.style.gridTemplateRows = `repeat(${gridSize}, ${cellSize})`;
+
+            for (let i = 0; i < gridSize * gridSize; i++) {
+                const input = document.createElement('input');
+                input.type = 'text';
+                input.maxLength = 1;
+                input.className = 'cell';
+                input.dataset.row = Math.floor(i / gridSize);
+                input.dataset.col = i % gridSize;
+                
+                input.style.width = cellSize;
+                input.style.height = cellSize;
+
+                input.addEventListener('input', handleInput);
+                container.appendChild(input);
+            }
+            createGridBorders();
+        }
+
+        function createGridBorders() {
+            const container = document.getElementById('sudoku-container');
+            const cells = container.querySelectorAll('.cell');
+            const { width: boxWidth, height: boxHeight } = getBoxDimensions(gridSize);
+
+            cells.forEach((cell, index) => {
+                const row = Math.floor(index / gridSize);
+                const col = index % gridSize;
+
+                if ((col + 1) % boxWidth === 0 && col !== gridSize - 1) {
+                    cell.classList.add('border-right');
+                }
+                if ((row + 1) % boxHeight === 0 && row !== gridSize - 1) {
+                    cell.classList.add('border-bottom');
+                }
+            });
+        }
+        
+        // Game Generation Logic
+        function generatePuzzle() {
+            clearBoardState();
+            
+            // Randomly solve full board
+            solveRandom();
+            
+            // Remove cells based on difficulty
+            const difficulty = document.getElementById('difficulty').value;
+            let cellsToRemove = 0;
+            if (gridSize === 4) {
+                cellsToRemove = difficulty === 'easy' ? 4 : (difficulty === 'medium' ? 6 : 8);
+            } else if (gridSize === 6) {
+                cellsToRemove = difficulty === 'easy' ? 12 : (difficulty === 'medium' ? 18 : 22);
+            } else { // 9x9
+                cellsToRemove = difficulty === 'easy' ? 30 : (difficulty === 'medium' ? 45 : 55);
+            }
+            
+            while(cellsToRemove > 0) {
+                const r = Math.floor(Math.random() * gridSize);
+                const c = Math.floor(Math.random() * gridSize);
+                if (grid[r][c] !== 0) {
+                    grid[r][c] = 0;
+                    cellsToRemove--;
+                }
+            }
+            
+            updateGridUI();
+            
+            // Lock pre-filled generated cells
+            document.querySelectorAll('.cell').forEach(cell => {
+                const r = cell.dataset.row;
+                const c = cell.dataset.col;
+                if (grid[r][c] !== 0) {
+                    cell.classList.add('locked-cell');
+                    cell.readOnly = true;
+                } else {
+                    cell.classList.remove('locked-cell');
+                    cell.readOnly = false;
+                }
+            });
+
+            hintCount = maxHints;
+            document.getElementById('hint-count').innerHTML = `<i class=\"fas fa-star\" style=\"color: #ffcc00; margin-right: 6px;\"></i> Hints: ${hintCount}`;
+            resetTimer();
+            startTimer();
+        }
+
+        function giveHint() {
+            if (hintCount <= 0) {
+                alert("No more hints available!");
+                return;
+            }
+
+            const empty = findEmptyLocation();
+            if (!empty) {
+                alert("No empty cells left to hint!");
+                return;
+            }
+
+            const [row, col] = empty;
+            // Test validity to assign the correct underlying number in backtracking solver
+            // Note: Since difficulty just removed numbers randomly without calculating uniqueness, a simpler hint uses solve() state
+            // But we didn't save the full board state, so we will just solve from the current state temporarily.
+            
+            let tempGrid = grid.map(rowArr => [...rowArr]); // Backup current grid
+            if (solve()) {
+                const correctNum = grid[row][col];
+                grid = tempGrid; // Restore
+                
+                grid[row][col] = correctNum;
+                updateGridUI();
+                
+                // Animate and lock
+                const cell = document.querySelector(`.cell[data-row="${row}"][data-col="${col}"]`);
+                if(cell) {
+                    cell.classList.add('locked-cell');
+                    cell.readOnly = true;
+                    cell.style.transition = 'all 0.3s';
+                    cell.style.backgroundColor = 'var(--accent-color)';
+                    cell.style.color = '#fff';
+                    setTimeout(() => {
+                        cell.style.backgroundColor = '';
+                        cell.style.color = '';
+                    }, 500);
+                }
+                
+                hintCount--;
+                document.getElementById('hint-count').innerHTML = `<i class=\"fas fa-star\" style=\"color: #ffcc00; margin-right: 6px;\"></i> Hints: ${hintCount}`;
+            } else {
+                grid = tempGrid; // Restore
+                alert("The current board configuration seems to have an error. Cannot provide a hint.");
+            }
+        }
+
+        function findEmptyLocation() {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    if (grid[row][col] === 0) {
+                        return [row, col];
+                    }
+                }
+            }
+            return null;
+        }
+
+        function isValid(num, row, col) {
+            // Check row and col
+            for (let i = 0; i < gridSize; i++) {
+                if (grid[row][i] === num || grid[i][col] === num) {
+                    return false;
+                }
+            }
+
+            // Check box using accurate dimensions
+            const { width: boxWidth, height: boxHeight } = getBoxDimensions(gridSize);
+            const startRow = Math.floor(row / boxHeight) * boxHeight;
+            const startCol = Math.floor(col / boxWidth) * boxWidth;
+            
+            for (let i = 0; i < boxHeight; i++) {
+                for (let j = 0; j < boxWidth; j++) {
+                    if (grid[startRow + i][startCol + j] === num) {
+                        return false;
+                    }
+                }
+            }
+            return true;
+        }
+
+        function solveSudoku() {
+            if (!timerStarted) startTimer();
+            const solved = solve();
+            if (solved) {
+                updateGridUI();
+                setTimeout(() => alert("Sudoku solved successfully!"), 100);
+            } else {
+                alert("No solution exists.");
+            }
+            stopTimer();
+        }
+
+        // Standard backtracking solve
+        function solve() {
+            const empty = findEmptyLocation();
+            if (!empty) return true;
+
+            const [row, col] = empty;
+            for (let num = 1; num <= gridSize; num++) {
+                if (isValid(num, row, col)) {
+                    grid[row][col] = num;
+                    if (solve()) return true;
+                    grid[row][col] = 0;
+                }
+            }
+            return false;
+        }
+        
+        // Randomized backtracking solve for generation
+        function solveRandom() {
+            const empty = findEmptyLocation();
+            if (!empty) return true;
+
+            const [row, col] = empty;
+            const nums = Array.from({length: gridSize}, (_, i) => i + 1).sort(() => Math.random() - 0.5);
+            
+            for (const num of nums) {
+                if (isValid(num, row, col)) {
+                    grid[row][col] = num;
+                    if (solveRandom()) return true;
+                    grid[row][col] = 0;
+                }
+            }
+            return false;
+        }
+
+        function clearBoardState() {
+            for (let i = 0; i < gridSize; i++) grid[i].fill(0);
+        }
+
+        function clearBoardUI() {
+            clearBoardState();
+            document.querySelectorAll('.cell').forEach(cell => {
+                cell.value = '';
+                cell.classList.remove('locked-cell');
+                cell.readOnly = false;
+            });
+            hintCount = maxHints;
+            document.getElementById('hint-count').innerHTML = `<i class=\"fas fa-star\" style=\"color: #ffcc00; margin-right: 6px;\"></i> Hints: ${hintCount}`;
+            resetTimer();
+        }
+
+        function updateGridUI() {
+            document.querySelectorAll('.cell').forEach(cell => {
+                const row = cell.dataset.row;
+                const col = cell.dataset.col;
+                cell.value = grid[row][col] !== 0 ? grid[row][col] : '';
+            });
+        }
+
+        function startTimer() {
+            if (timerInterval !== null) return; 
+            timerStarted = true;
+            timerInterval = setInterval(() => {
+                elapsedTime++;
+                const minutes = Math.floor(elapsedTime / 60).toString().padStart(2, '0');
+                const seconds = (elapsedTime % 60).toString().padStart(2, '0');
+                document.getElementById('timer').innerHTML = `<i class="fas fa-clock" style="margin-right: 6px;"></i> ${minutes}:${seconds}`;
+            }, 1000);
+        }
+
+        function stopTimer() {
+            clearInterval(timerInterval);
+            timerInterval = null;
+        }
+
+        function resetTimer() {
+            stopTimer();
+            timerStarted = false; 
+            elapsedTime = 0;
+            document.getElementById('timer').innerHTML = `<i class="fas fa-clock" style="margin-right: 6px;"></i> 00:00`;
+        }
+
+        function handleInput(event) {
+            const value = event.target.value;
+            // Allow only numbers 1-9
+            if (!/^[1-9]?$/.test(value)) {
+                event.target.value = '';
+                return;
+            }
+            const row = event.target.dataset.row;
+            const col = event.target.dataset.col;
+            grid[row][col] = value ? parseInt(value) : 0;
+
+            if (!checkGridValidity()) {
+                // Shake animation for invalid input validation
+                event.target.style.transition = 'transform 0.1s';
+                event.target.style.transform = 'translateX(-5px)';
+                setTimeout(() => event.target.style.transform = 'translateX(5px)', 50);
+                setTimeout(() => event.target.style.transform = 'translateX(-5px)', 100);
+                setTimeout(() => event.target.style.transform = 'translateX(5px)', 150);
+                setTimeout(() => event.target.style.transform = 'translateX(0)', 200);
+
+                event.target.value = '';
+                grid[row][col] = 0;
+            } else if (gridSize === parseInt(value) && value !== '') { // Just keeping timer logic 
+            }
+
+            if (!timerStarted) startTimer();
+        }
+
+        // Validity check used during manual input
+        function checkGridValidity() {
+            for (let row = 0; row < gridSize; row++) {
+                for (let col = 0; col < gridSize; col++) {
+                    const num = grid[row][col];
+                    if (num !== 0) {
+                        grid[row][col] = 0;
+                        if (!isValid(num, row, col)) {
+                            grid[row][col] = num;
+                            return false;
+                        }
+                        grid[row][col] = num;
+                    }
+                }
+            }
+            return true;
+        }
+
+        createGridUI(); 
+    </script>
+</body>
+</html>

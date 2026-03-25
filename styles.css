@@ -1,0 +1,434 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+:root {
+    --bg-color-light: #f5f5f7;
+    --text-color-light: #1d1d1f;
+    --primary-light: #ffffff;
+    --border-light: rgba(0, 0, 0, 0.1);
+    
+    --bg-color-dark: #000000;
+    --text-color-dark: #f5f5f7;
+    --primary-dark: #1c1c1e;
+    --border-dark: rgba(255, 255, 255, 0.15);
+
+    --accent-color: #0066cc; /* Apple blue */
+    --accent-hover: #007aff;
+    
+    --glass-bg-dark: rgba(28, 28, 30, 0.65);
+    --glass-border-dark: rgba(255, 255, 255, 0.1);
+    --glass-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.37);
+    
+    --glass-bg-colorful: rgba(255, 255, 255, 0.1);
+    --bg-color-colorful: linear-gradient(135deg, #12c2e9, #c471ed, #f64f59);
+    
+    --glass-blur: blur(16px);
+    
+    --font-main: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    --transition-speed: 0.3s;
+}
+
+/* Default Theme (Dark & Modern Apple-like) */
+body {
+    margin: 0;
+    padding: 0;
+    font-family: var(--font-main);
+    background-color: var(--bg-color-dark);
+    color: var(--text-color-dark);
+    
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-block-size: 100vh;
+    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+    
+    /* Subtle background glow effect if needed */
+    background-image: radial-gradient(circle at 50% 0%, #1a1a1c 0%, #000000 70%);
+    background-attachment: fixed;
+}
+
+/* Light Theme overrides */
+body.light {
+    background-color: var(--bg-color-light);
+    color: var(--text-color-light);
+    background-image: radial-gradient(circle at 50% 0%, #ffffff 0%, #f5f5f7 70%);
+}
+
+/* Colorful Theme overrides */
+body.colorful {
+    background: var(--bg-color-colorful);
+    color: #fff;
+    background-attachment: fixed;
+}
+
+h1, h2, h3, p {
+    margin: 0;
+}
+
+.title {
+    text-align: center;
+    margin-block-end: 2rem;
+    animation: fadeInDown 0.8s ease-out forwards;
+}
+
+.title h1 {
+    font-size: 3.5rem;
+    font-weight: 700;
+    letter-spacing: 0.2rem;
+    margin-block-end: 0.5rem;
+    background: linear-gradient(90deg, #fff, #a1a1a6);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+body.light .title h1 {
+    background: linear-gradient(90deg, #1d1d1f, #86868b);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.title h2 {
+    font-size: 1.5rem;
+    font-weight: 400;
+    color: #86868b;
+    letter-spacing: 0.1rem;
+}
+
+/* Glass panel container for main content area */
+.glass-panel {
+    background: var(--glass-bg-dark);
+    backdrop-filter: var(--glass-blur);
+    -webkit-backdrop-filter: var(--glass-blur);
+    border: 1px solid var(--glass-border-dark);
+    border-radius: 24px;
+    padding: 40px;
+    box-shadow: var(--glass-shadow);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.2rem;
+    animation: fadeInUp 0.8s ease-out forwards;
+    max-inline-size: 90vw;
+}
+
+body.light .glass-panel {
+    background: rgba(255, 255, 255, 0.7);
+    border: 1px solid var(--border-light);
+    box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.05);
+}
+
+body.colorful .glass-panel {
+    background: var(--glass-bg-colorful);
+    border: 1px solid rgba(255, 255, 255, 0.3);
+}
+
+/* Links inside glass panels usually should hide standard bullets */
+.glass-panel li {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+}
+.glass-panel a {
+    text-decoration: none;
+}
+
+/* Modern Apple-like Buttons */
+button, .button {
+    font-family: var(--font-main);
+    font-size: 1rem;
+    font-weight: 500;
+    padding: 14px 28px;
+    border-radius: 980px; /* pill shape */
+    border: none;
+    cursor: pointer;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    text-decoration: none;
+    transition: all 0.2s cubic-bezier(0.25, 0.1, 0.25, 1);
+    
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color-dark);
+    border: 1px solid rgba(255, 255, 255, 0.15);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    outline: none;
+}
+
+body.light button, body.light .button {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-color-light);
+    border: 1px solid rgba(0, 0, 0, 0.1);
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.05);
+}
+
+button:hover, .button:hover {
+    background-color: var(--accent-color);
+    color: white;
+    border-color: var(--accent-color);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 12px rgba(0, 102, 204, 0.3);
+}
+
+button:active, .button:active {
+    transform: scale(0.96);
+    box-shadow: 0 2px 4px rgba(0, 102, 204, 0.2);
+}
+
+/* Specific styling for Exit buttons */
+.exit-btn {
+    background-color: rgba(255, 59, 48, 0.15);
+    color: #ff3b30;
+    border-color: rgba(255, 59, 48, 0.3);
+}
+.exit-btn:hover {
+    background-color: #ff3b30;
+    border-color: #ff3b30;
+    color: white;
+    box-shadow: 0 6px 12px rgba(255, 59, 48, 0.3);
+}
+
+.stay-btn {
+    background-color: rgba(52, 199, 89, 0.15);
+    color: #34c759;
+    border-color: rgba(52, 199, 89, 0.3);
+}
+.stay-btn:hover {
+    background-color: #34c759;
+    border-color: #34c759;
+    color: white;
+    box-shadow: 0 6px 12px rgba(52, 199, 89, 0.3);
+}
+
+/* Settings Forms/Toggles */
+.settings-option {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    margin-block: 10px;
+}
+
+.theme-toggle {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-block: 1rem;
+}
+
+/* Sudoku Grid Layout */
+#sudoku-container {
+    display: grid;
+    gap: 2px;
+    padding: 6px;
+    background-color: rgba(255, 255, 255, 0.2);
+    border-radius: 12px;
+    margin-block: 1rem;
+    box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+body.light #sudoku-container {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.cell {
+    text-align: center;
+    font-size: 24px;
+    font-weight: 500;
+    font-family: var(--font-main);
+    border: none;
+    outline: none;
+    border-radius: 4px;
+    background-color: var(--primary-dark);
+    color: var(--text-color-dark);
+    transition: background-color 0.2s, box-shadow 0.2s;
+    /* We handle right/bottom borders through JS, but they need to be sleek */
+}
+
+body.light .cell {
+    background-color: var(--primary-light);
+    color: var(--text-color-light);
+}
+
+.cell:focus {
+    background-color: rgba(0, 102, 204, 0.2);
+    box-shadow: inset 0 0 0 2px var(--accent-color);
+}
+
+body.light .cell:focus {
+    background-color: rgba(0, 122, 255, 0.1);
+}
+
+/* The thick borders created by JS need an override class to look modern */
+.cell.border-right {
+    box-shadow: 2px 0 0 0 rgba(255, 255, 255, 0.3);
+}
+.cell.border-bottom {
+    box-shadow: 0 2px 0 0 rgba(255, 255, 255, 0.3);
+}
+.cell.border-right.border-bottom {
+    box-shadow: 2px 2px 0 0 rgba(255, 255, 255, 0.3);
+}
+
+body.light .cell.border-right {
+    box-shadow: 2px 0 0 0 rgba(0, 0, 0, 0.2);
+}
+body.light .cell.border-bottom {
+    box-shadow: 0 2px 0 0 rgba(0, 0, 0, 0.2);
+}
+body.light .cell.border-right.border-bottom {
+    box-shadow: 2px 2px 0 0 rgba(0, 0, 0, 0.2);
+}
+
+
+/* Controls Section */
+#controls {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    margin-block-end: 20px;
+    background: rgba(255, 255, 255, 0.05);
+    padding: 16px;
+    border-radius: 20px;
+    width: 100%;
+    max-width: 600px;
+}
+
+body.light #controls {
+    background: rgba(0, 0, 0, 0.03);
+}
+
+#controls select {
+    appearance: none;
+    background-color: rgba(255, 255, 255, 0.1);
+    color: var(--text-color-dark);
+    padding: 10px 16px 10px 16px;
+    border-radius: 12px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    font-family: var(--font-main);
+    font-size: 1rem;
+    cursor: pointer;
+    outline: none;
+}
+
+body.light #controls select {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-color-light);
+    border-color: rgba(0, 0, 0, 0.1);
+}
+
+#timer, #hint-count {
+    font-size: 1.1rem;
+    font-weight: 500;
+    color: var(--text-color-dark);
+    background: rgba(255, 255, 255, 0.1);
+    padding: 8px 16px;
+    border-radius: 12px;
+    display: inline-flex;
+    align-items: center;
+}
+
+body.light #timer, body.light #hint-count {
+    color: var(--text-color-light);
+    background: rgba(0, 0, 0, 0.05);
+}
+
+/* Animations */
+@keyframes fadeInDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+@keyframes fadeInUp {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Loading specific */
+.loading-container {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 30px;
+}
+
+.loading-logo img {
+    width: 120px;
+    height: auto;
+    filter: drop-shadow(0 0 20px rgba(255, 255, 255, 0.2));
+    animation: pulse 2s infinite ease-in-out;
+}
+
+body.light .loading-logo img {
+    filter: invert(1) drop-shadow(0 0 20px rgba(0, 0, 0, 0.1));
+}
+
+.loading-bar {
+    width: 250px;
+    height: 6px;
+    background-color: rgba(255, 255, 255, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    position: relative;
+    box-shadow: inset 0 1px 3px rgba(0, 0, 0, 0.3);
+}
+
+body.light .loading-bar {
+    background-color: rgba(0, 0, 0, 0.1);
+}
+
+.loading-bar-fill {
+    width: 0%;
+    height: 100%;
+    background: linear-gradient(90deg, #007aff, #34c759);
+    border-radius: 10px;
+    animation: loadingAnim 4s cubic-bezier(0.4, 0, 0.2, 1) forwards;
+    position: relative;
+    box-shadow: 0 0 10px rgba(0, 122, 255, 0.5);
+}
+
+@keyframes loadingAnim {
+    0% { width: 0%; }
+    20% { width: 30%; }
+    50% { width: 45%; }
+    80% { width: 85%; }
+    100% { width: 100%; }
+}
+
+@keyframes pulse {
+    0% { transform: scale(0.95); opacity: 0.8; }
+    50% { transform: scale(1.05); opacity: 1; }
+    100% { transform: scale(0.95); opacity: 0.8; }
+}
+
+/* Locked Cells for Generated Puzzles */
+.cell.locked-cell {
+    background-color: rgba(255, 255, 255, 0.05);
+    color: var(--text-color-dark);
+    font-weight: 700;
+    pointer-events: none; /* Prevent clicking/focusing */
+}
+
+body.light .cell.locked-cell {
+    background-color: rgba(0, 0, 0, 0.05);
+    color: var(--text-color-light);
+}
+
+body.colorful .cell.locked-cell {
+    background-color: rgba(0, 0, 0, 0.2);
+    color: #fff;
+}

@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Settings - Sudoku Solver</title>
+    <link rel="stylesheet" href="styles.css">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css" rel="stylesheet">
+</head>
+<body>
+
+    <div class="glass-panel" style="width: 400px;">
+        <div class="title" style="margin-bottom: 1rem;">
+            <h1 style="font-size: 2.5rem;">Settings</h1>
+        </div>
+
+        <!-- Navigation Buttons inside Settings for quick access -->
+        <div style="display: flex; gap: 10px; margin-bottom: 30px;">
+            <button class="button" onclick="location.href='index.html'" style="padding: 10px 20px; font-size: 0.9rem;">
+                <i class="fas fa-home"></i> Home
+            </button>
+            <button class="button" onclick="location.href='loding.html'" style="padding: 10px 20px; font-size: 0.9rem;">
+                <i class="fas fa-play"></i> Puzzle
+            </button>
+        </div>
+
+        <h3 style="align-self: flex-start; margin-bottom: 10px; color: #86868b; font-weight: 500;">Appearance</h3>
+        
+        <div class="theme-toggle">
+            <button class="button" onclick="setTheme('light')" style="flex: 1; padding: 10px;"><i class="fas fa-sun" style="margin-right: 6px;"></i> Light</button>
+            <button class="button" onclick="setTheme('dark')" style="flex: 1; padding: 10px;"><i class="fas fa-moon" style="margin-right: 6px;"></i> Dark</button>
+            <button class="button" onclick="setTheme('colorful')" style="flex: 1; padding: 10px;"><i class="fas fa-palette" style="margin-right: 6px;"></i> Color</button>
+        </div>
+
+        <h3 style="align-self: flex-start; margin-top: 20px; margin-bottom: 10px; color: #86868b; font-weight: 500;">Audio</h3>
+
+        <div class="settings-option" style="background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px;">
+            <label for="sound-toggle" style="font-size: 1.1rem; display: flex; align-items: center;">
+                <i class="fas fa-volume-up" style="margin-right: 12px; color: var(--accent-color);"></i> Sound Effects
+            </label>
+            <!-- Custom CSS toggle switch look -->
+            <label class="switch" style="position: relative; display: inline-block; width: 50px; height: 28px;">
+                <input type="checkbox" id="sound-toggle" onclick="toggleSound()" checked style="opacity: 0; width: 0; height: 0;">
+                <span class="slider round" style="position: absolute; cursor: pointer; top: 0; left: 0; right: 0; bottom: 0; background-color: rgba(255,255,255,0.2); transition: .4s; border-radius: 34px;">
+                    <span class="slider-ball" style="position: absolute; content: ''; height: 20px; width: 20px; left: 4px; bottom: 4px; background-color: white; transition: .4s; border-radius: 50%;"></span>
+                </span>
+            </label>
+        </div>
+
+        <button class="button" onclick="playSound()" style="margin-top: 10px; width: 100%;">
+            <i class="fas fa-vial" style="margin-right: 8px;"></i> Test Sound
+        </button>
+
+        <audio id="soundEffect" src="song.mp3" preload="auto"></audio>
+
+        <p style="margin-top: 30px; font-size: 0.8rem; color: #86868b;">&copy; 2024 Sudoku Solver</p>
+    </div>
+
+    <!-- Inject switch styles dynamically so we don't pollute styles.css with specific toggle logic if not needed elsewhere, but let's just make it generic in the HTML for self-containment -->
+    <style>
+        .switch input:checked + .slider { background-color: var(--accent-color); }
+        .switch input:focus + .slider { box-shadow: 0 0 1px var(--accent-color); }
+        .switch input:checked + .slider .slider-ball { transform: translateX(22px); }
+    </style>
+
+    <script>
+        // Load theme from localStorage if available
+        document.addEventListener('DOMContentLoaded', () => {
+            const savedTheme = localStorage.getItem('sudokuTheme') || 'dark';
+            setTheme(savedTheme);
+            
+            const soundEnabled = localStorage.getItem('sudokuSound') !== 'false';
+            document.getElementById('sound-toggle').checked = soundEnabled;
+        });
+
+        function setTheme(theme) {
+            document.body.className = ''; 
+            if (theme === 'dark') {
+                document.body.classList.add('dark');
+            } else if (theme === 'colorful') {
+                document.body.classList.add('colorful');
+            } else {
+                document.body.classList.add('light'); 
+            }
+            localStorage.setItem('sudokuTheme', theme);
+        }
+
+        function toggleSound() {
+            const soundToggle = document.getElementById("sound-toggle");
+            const soundEnabled = soundToggle.checked;
+            localStorage.setItem('sudokuSound', soundEnabled);
+            
+            if (!soundEnabled) {
+                const soundEffect = document.getElementById("soundEffect");
+                soundEffect.pause();
+                soundEffect.currentTime = 0;
+            }
+        }
+
+        function playSound() {
+            const soundToggle = document.getElementById("sound-toggle");
+            if (soundToggle.checked) {
+                const soundEffect = document.getElementById("soundEffect");
+                soundEffect.currentTime = 0; // Rewind
+                soundEffect.play().catch(e => console.log("Audio play failed:", e));
+            }
+        }
+    </script>
+
+</body>
+</html>
